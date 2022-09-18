@@ -14,11 +14,6 @@ const prisma = new PrismaClient({
 	log: ['query'],
 })
 
-app.get('/', async (request, response) => {
-	console.log('api running...')
-	return response.json('hello')
-})
-
 app.get('/games', async (request, response) => {
 	const games = await prisma.game.findMany({
 		include: {
@@ -54,7 +49,7 @@ app.post('/games/:id/ads', async (request, response) => {
 })
 
 app.get('/games/:id/ads', async (request, response) => {
-	const gameId: any = request.params.id
+	const gameId = request.params.id
 
 	const ads = await prisma.ad.findMany({
 		select: {
@@ -75,16 +70,14 @@ app.get('/games/:id/ads', async (request, response) => {
 	})
 
 	return response.json(
-		ads.map(
-			(ad: { weekDays: string; hourStart: number; hourEnd: number }) => {
-				return {
-					...ad,
-					weekDays: ad.weekDays.split(','),
-					hourStart: convertMinutesToHourString(ad.hourStart),
-					hourEnd: convertMinutesToHourString(ad.hourEnd),
-				}
+		ads.map((ad) => {
+			return {
+				...ad,
+				weekDays: ad.weekDays.split(','),
+				hourStart: convertMinutesToHourString(ad.hourStart),
+				hourEnd: convertMinutesToHourString(ad.hourEnd),
 			}
-		)
+		})
 	)
 })
 
@@ -105,4 +98,4 @@ app.get('/ads/:id/discord', async (request, response) => {
 	})
 })
 
-app.listen(process.env.PORT || 3333)
+app.listen(3333)
